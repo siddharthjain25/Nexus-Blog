@@ -49,7 +49,7 @@ Client → Server: SYN
 The **server** receives the SYN and replies with a combined **SYN-ACK** (synchronize-acknowledge) packet. This both acknowledges the client’s SYN and includes the server’s own SYN to initiate its part of the connection. :contentReference[oaicite:4]{index=4}
 
 
-## Server → Client: SYN-ACK
+Server → Client: SYN-ACK
 
 
 ### 3️⃣ ACK — Client Confirms
