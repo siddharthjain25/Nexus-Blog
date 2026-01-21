@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@import "./typography.css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root {
+  /* Common variables */
+  --transition-speed: 0.3s;
+}
+
+html[data-theme="light"] {
+  --background: #fcfcfc; /* Slightly softer white */
+  --foreground: #1f1f1f; /* Softer black for reading comfort */
+  --accent: #006cac;
+  --muted: #f3f4f6;
+  --border: #e5e7eb;
+  --ring: 0 0 0 2px rgba(0, 108, 172, 0.4); /* Soft focus ring */
+}
+
+html[data-theme="dark"] {
+  --background: #1a1e29; /* Deepened the blue-grey for better contrast */
+  --foreground: #f3f4f6;
+  --accent: #ff8534; /* Slightly softer orange to reduce eye strain */
+  --muted: #2d3548;
+  --border: rgba(255, 255, 255, 0.1); /* Elegant transparent border */
+  --ring: 0 0 0 2px rgba(255, 133, 52, 0.4);
+}
+
+@theme inline {
+  --font-app: var(--font-google-sans-code);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  
+  /* Animation utilities */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  html {
+    @apply overflow-y-scroll scroll-smooth;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    @apply flex min-h-svh flex-col bg-background font-app text-foreground antialiased;
+    /* Smooth theme transition */
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    
+    /* Elegant selection styles */
+    ::selection {
+      @apply bg-accent/20 text-accent;
+    }
+  }
+
+  /* Refined Scrollbar */
+  * {
+    @apply border-border;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+
+  /* Improved Focus States */
+  a,
+  button {
+    @apply transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:shadow-[var(--ring)];
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility max-w-app {
+  @apply max-w-3xl;
+}
+
+@utility app-layout {
+  @apply mx-auto w-full max-w-app px-4;
+}
+
+.active-nav {
+  /* Using text-accent is often cleaner than a wavy underline, 
+     but keeping your style with a smoother offset */
+  @apply underline decoration-accent decoration-2 underline-offset-8 decoration-wavy;
+}
+
+/* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
+:target {
+  scroll-margin-block: 2rem; /* Increased for breathing room */
+}
