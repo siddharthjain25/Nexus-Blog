@@ -8,8 +8,8 @@ interface CommentsProps {
 }
 
 export default function Comments({
-  lightTheme = "light",
-  darkTheme = "dark",
+  lightTheme = GISCUS.theme as Theme,
+  darkTheme = GISCUS.theme as Theme,
 }: CommentsProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     try {
@@ -50,7 +50,10 @@ export default function Comments({
 
   return (
     <div className="mt-8" data-testid="giscus-comments">
-      <Giscus {...GISCUS} theme={theme === "light" ? lightTheme : darkTheme} />
+      {(() => {
+        const { theme: _ignored, ...giscusProps } = GISCUS as any;
+        return <Giscus {...giscusProps} theme={theme === "light" ? lightTheme : darkTheme} />;
+      })()}
     </div>
   );
 }

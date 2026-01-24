@@ -6,6 +6,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Card from "@/components/Card.astro";
 import getPostsByGroupCondition from "@/utils/getPostsByGroupCondition";
+import getPostDatetime from "@/utils/getPostDatetime";
 import { SITE } from "@/config";
 
 // Redirect to 404 page if `showArchives` config is false
@@ -36,8 +37,7 @@ const months = [
   <Main pageTitle="Archives" pageDesc="All the articles I've archived.">
     {
       Object.entries(
-        getPostsByGroupCondition(posts, post =>
-          (post.data.pubDatetime ?? new Date()).getFullYear()
+        getPostsByGroupCondition(posts, post => (getPostDatetime(post.data) ?? new Date()).getFullYear()
         )
       )
         .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
@@ -48,7 +48,7 @@ const months = [
             {Object.entries(
               getPostsByGroupCondition(
                 yearGroup,
-                post => (post.data.pubDatetime ?? new Date()).getMonth() + 1
+                post => (getPostDatetime(post.data) ?? new Date()).getMonth() + 1
               )
             )
               .sort(([monthA], [monthB]) => Number(monthB) - Number(monthA))
@@ -61,8 +61,8 @@ const months = [
                   <ul>
                     {monthGroup
                       .sort((a, b) => {
-                        const toTs = (d?: Date | null) => Math.floor(new Date(d ?? 0).getTime() / 1000);
-                        return toTs(b.data.pubDatetime) - toTs(a.data.pubDatetime);
+                        const toTs = (p: any) => Math.floor((getPostDatetime(p.data)?.getTime() ?? 0) / 1000);
+                        return toTs(b) - toTs(a);
                       })
                       .map(data => (
                         <Card {...data} />

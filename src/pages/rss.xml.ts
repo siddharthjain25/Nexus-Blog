@@ -2,6 +2,7 @@ import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 import { getPath } from "@/utils/getPath";
 import getSortedPosts from "@/utils/getSortedPosts";
+import getPostDatetime from "@/utils/getPostDatetime";
 import { SITE } from "@/config";
 
 export async function GET() {
@@ -15,7 +16,7 @@ export async function GET() {
       link: getPath(id, filePath),
       title: data.title,
       description: data.description,
-      pubDate: new Date((data.modDatetime ?? data.pubDatetime) ?? Date.now()),
+      pubDate: getPostDatetime(data) ?? new Date(),
     })),
   });
 }

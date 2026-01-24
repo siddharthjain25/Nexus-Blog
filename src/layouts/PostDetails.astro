@@ -6,6 +6,7 @@ import Footer from "@/components/Footer.astro";
 import Comments from "@/components/Comments";
 import Tag from "@/components/Tag.astro";
 import Datetime from "@/components/Datetime.astro";
+import getPostDatetime from "@/utils/getPostDatetime";
 import EditPost from "@/components/EditPost.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
 import BackButton from "@/components/BackButton.astro";
@@ -29,12 +30,15 @@ const {
   description,
   ogImage: initOgImage,
   canonicalURL,
-  pubDatetime,
-  modDatetime,
+  pubDatetime: rawPubDatetime,
+  modDatetime: rawModDatetime,
   timezone,
   tags,
   hideEditPost,
 } = post.data;
+
+const pubDatetime = getPostDatetime(post.data);
+const modDatetime = rawModDatetime ? new Date(rawModDatetime) : null;
 
 const { Content } = await render(post);
 
@@ -98,7 +102,7 @@ const nextPost =
       {title}
     </h1>
     <div class="my-2 flex items-center gap-2">
-      <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
+      <Datetime pubDatetime={pubDatetime} modDatetime={modDatetime} timezone={timezone} size="lg" />
       <span
         aria-hidden="true"
         class:list={[

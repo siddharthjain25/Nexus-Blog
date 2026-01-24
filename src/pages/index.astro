@@ -21,7 +21,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   <Header />
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
+      <h1 class="my-4 inline-block text-4xl font-bold sm:my-1 sm:text-5xl">
         Welcome to {SITE.title}
       </h1>
       <a
@@ -40,7 +40,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
       </a>
 
       <p>
-        Welcome to my personal blog where I share my thoughts on web development,
+        My personal blog where I share my thoughts on web development,
         programming, and technology.
       </p>
     </section>
@@ -50,7 +50,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         <section
           id="featured"
           class:list={[
-            "pt-12 pb-6",
+            "pt-6 pb-6",
             { "border-b border-border": recentPosts.length > 0 },
           ]}
         >
@@ -78,7 +78,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
       )
     }
 
-    <div class="my-8 text-center">
+    <div class="my-2 text-center">
       <LinkButton href="/posts/">
         All Posts
         <IconArrowRight class="inline-block rtl:-rotate-180" />

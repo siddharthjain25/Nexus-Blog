@@ -92,7 +92,7 @@ export const GISCUS = {
   mapping: "pathname",
   reactionsEnabled: "1",
   emitMetadata: "0",
-  theme: "catppuccin_macchiato",
+  theme: "catppuccin_frappe",
   inputPosition: "bottom",
   lang: "en",
   loading: "lazy",
