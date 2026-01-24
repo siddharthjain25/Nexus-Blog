@@ -1,7 +1,7 @@
 ---
 title: "VLAN Trunking Explained: How Multiple VLANs Travel Over a Single Link"
 description: "A beginner-friendly but practical guide to VLAN Trunking, 802.1Q tagging, access vs trunk ports, native VLAN, and real-world use cases."
-author: Siddharth Jain
+author: "Siddharth Jain"
 pubDate: "2026-01-24"
 pubTime: "02:00:00"
 featured: true
