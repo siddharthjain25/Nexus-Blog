@@ -4,7 +4,7 @@ description: "Discover Apple Intelligence, a new era of personal AI integrated i
 author: "Siddharth Jain"
 pubDate: "2024-06-15"
 pubTime: "11:00:00"
-featured: true
+featured: false
 draft: false
 tags:
  - AI
