@@ -1,0 +1,22 @@
+---
+import Main from "@/layouts/Main.astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import { SITE } from "@/config";
+import { fetchPosts } from "@/utils/api";
+
+const posts = await fetchPosts();
+---
+
+<Layout title={`Posts | ${SITE.title}`}>
+  <Header />
+  <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
+    <ul>
+      {posts.map(data => <Card {...data} />)}
+    </ul>
+  </Main>
+
+  <Footer noMarginTop={posts.length > 5} />
+</Layout>

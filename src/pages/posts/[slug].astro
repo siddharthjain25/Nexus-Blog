@@ -1,0 +1,14 @@
+---
+import PostDetails from "@/layouts/PostDetails.astro";
+import { fetchPost, fetchPosts } from "@/utils/api";
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+const post = await fetchPost(slug);
+if (!post) return Astro.redirect("/404");
+
+const posts = await fetchPosts();
+---
+
+<PostDetails post={post} posts={posts} />

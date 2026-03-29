@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 @import "tailwindcss";
 @import "./typography.css";
 
@@ -6,6 +7,7 @@
 :root {
   /* Common variables */
   --transition-speed: 0.3s;
+  --font-google-sans-code: 'Roboto Mono', monospace;
 }
 
 html[data-theme="light"] {

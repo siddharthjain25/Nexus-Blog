@@ -1,7 +1,5 @@
 ---
-import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
-import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
 import "@/styles/global.css";
 
@@ -36,7 +34,7 @@ const structuredData = {
   "@type": "BlogPosting",
   headline: `${title}`,
   image: `${socialImageURL}`,
-  datePublished: `${pubDatetime?.toISOString()}`,
+  ...(pubDatetime && { datePublished: pubDatetime.toISOString() }),
   ...(modDatetime && { dateModified: modDatetime.toISOString() }),
   author: [
     {
@@ -61,18 +59,11 @@ const structuredData = {
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Load Font -->
-    <Font
-      cssVariable="--font-google-sans-code"
-      preload={[{ subset: "latin", weight: 400, style: "normal" }]}
-    />
-
     <!-- General Meta Tags -->
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     <meta name="author" content={author} />
-    <link rel="sitemap" href="/sitemap-index.xml" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content={title} />
@@ -123,18 +114,6 @@ const structuredData = {
 
     <meta name="theme-color" content="" />
 
-    {
-      // If PUBLIC_GOOGLE_SITE_VERIFICATION is set in the environment variable,
-      // include google-site-verification tag in the heading
-      // Learn more: https://support.google.com/webmasters/answer/9008080#meta_tag_verification&zippy=%2Chtml-tag
-      PUBLIC_GOOGLE_SITE_VERIFICATION && (
-        <meta
-          name="google-site-verification"
-          content={PUBLIC_GOOGLE_SITE_VERIFICATION}
-        />
-      )
-    }
-
     <ClientRouter />
 
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
@@ -167,10 +146,35 @@ const structuredData = {
       })();
     </script>
   </head>
-  <body>
+  <body class="flex min-h-svh flex-col bg-background font-app text-foreground antialiased">
+    <!-- Global Loading Bar -->
+    <div id="loading-bar" class="fixed top-0 left-0 h-1 bg-accent transition-all duration-300 ease-out opacity-0 z-50 pointer-events-none" style="width: 0%"></div>
+    
     <slot />
 
     <!-- Load full theme logic -->
     <script src="../scripts/theme.ts"></script>
+
+    <script is:inline>
+      document.addEventListener('astro:before-preparation', () => {
+        const bar = document.getElementById('loading-bar');
+        if (bar) {
+          bar.style.width = '0%';
+          bar.classList.remove('opacity-0');
+          setTimeout(() => { bar.style.width = '80%'; }, 10);
+        }
+      });
+
+      document.addEventListener('astro:page-load', () => {
+        const bar = document.getElementById('loading-bar');
+        if (bar && !bar.classList.contains('opacity-0')) {
+          bar.style.width = '100%';
+          setTimeout(() => {
+            bar.classList.add('opacity-0');
+            setTimeout(() => { bar.style.width = '0%'; }, 300);
+          }, 200);
+        }
+      });
+    </script>
   </body>
 </html>

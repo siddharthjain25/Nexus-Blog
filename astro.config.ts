@@ -1,6 +1,5 @@
 import { defineConfig, envField, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -13,12 +12,14 @@ import { SITE } from "./src/config";
 
 import react from "@astrojs/react";
 
+import node from "@astrojs/node";
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
-  integrations: [sitemap({
-    filter: page => SITE.showArchives || !page.endsWith("/archives"),
-  }), react()],
+  output: "server",
+  adapter: node({ mode: "standalone" }),
+  integrations: [react()],
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     shikiConfig: {
@@ -50,24 +51,16 @@ export default defineConfig({
   },
   env: {
     schema: {
-      PUBLIC_GOOGLE_SITE_VERIFICATION: envField.string({
+      BACKEND_URL: envField.string({
+        access: "secret",
+        context: "server",
+        default: "http://localhost:8000",
+      }),
+      PUBLIC_BACKEND_URL: envField.string({
         access: "public",
         context: "client",
-        optional: true,
+        default: "http://localhost:8000",
       }),
     },
-  },
-  experimental: {
-    preserveScriptOrder: true,
-    fonts: [
-      {
-        name: "Google Sans Code",
-        cssVariable: "--font-google-sans-code",
-        provider: fontProviders.google(),
-        fallbacks: ["monospace"],
-        weights: [300, 400, 500, 600, 700],
-        styles: ["normal", "italic"],
-      },
-    ],
   },
 });

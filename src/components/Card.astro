@@ -1,15 +1,15 @@
 ---
-import type { CollectionEntry } from "astro:content";
 import { slugifyStr } from "@/utils/slugify";
-import { getPath } from "@/utils/getPath";
 import Datetime from "./Datetime.astro";
 import getPostDatetime from "@/utils/getPostDatetime";
 
 type Props = {
   variant?: "h2" | "h3";
-} & CollectionEntry<"blog">;
+  id: string;
+  data: any;
+};
 
-const { variant: Heading = "h2", id, data, filePath } = Astro.props;
+const { variant: Heading = "h2", id, data } = Astro.props;
 
 const { title, description } = data;
 const pubDatetime = getPostDatetime(data);
@@ -18,7 +18,7 @@ const modDatetime = data.modDatetime ? new Date(data.modDatetime) : null;
 
 <li class="my-6">
   <a
-    href={getPath(id, filePath)}
+    href={`/posts/${id}/`}
     class:list={[
       "inline-block text-lg font-medium text-accent",
       "decoration-dashed underline-offset-4 hover:underline",
@@ -31,6 +31,6 @@ const modDatetime = data.modDatetime ? new Date(data.modDatetime) : null;
       {title}
     </Heading>
   </a>
-  <Datetime pubDatetime={pubDatetime} modDatetime={modDatetime} timezone={data.timezone} />
+  <Datetime pubDatetime={pubDatetime} modDatetime={modDatetime} timezone={data.timezone} author={data.author} />
   <p>{description}</p>
 </li>
