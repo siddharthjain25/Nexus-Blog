@@ -9,7 +9,7 @@ export async function GET() {
     title: SITE.title,
     description: SITE.desc,
     site: SITE.website,
-    items: posts.map(({ data, id }) => ({
+    items: posts.map(({ data, id }: any) => ({
       link: `/posts/${id}/`,
       title: data.title,
       description: data.description,

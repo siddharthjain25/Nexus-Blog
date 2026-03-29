@@ -14,7 +14,7 @@ const posts = await fetchPosts();
   <Header />
   <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
     <ul>
-      {posts.map(data => <Card {...data} />)}
+      {posts.map((data: any) => <Card {...data} />)}
     </ul>
   </Main>
 

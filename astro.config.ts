@@ -1,4 +1,4 @@
-import { defineConfig, envField, fontProviders } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
@@ -54,12 +54,10 @@ export default defineConfig({
       BACKEND_URL: envField.string({
         access: "secret",
         context: "server",
-        default: "http://localhost:8000",
       }),
       PUBLIC_BACKEND_URL: envField.string({
         access: "public",
         context: "client",
-        default: "http://localhost:8000",
       }),
     },
   },

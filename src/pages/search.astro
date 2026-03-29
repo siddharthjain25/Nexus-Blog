@@ -42,7 +42,7 @@ import { PUBLIC_BACKEND_URL } from "astro:env/client";
   <Footer />
 </Layout>
 
-<script define:vars={{ PUBLIC_BACKEND_URL }}>
+<script is:inline define:vars={{ PUBLIC_BACKEND_URL }}>
   function initSearch() {
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');

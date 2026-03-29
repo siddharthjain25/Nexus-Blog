@@ -46,7 +46,7 @@ const recentPosts = posts.slice(0, SITE.postPerIndex);
         <section id="recent-posts" class="pt-12 pb-6">
           <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
           <ul>
-            {recentPosts.map((data) => (
+            {recentPosts.map((data: any) => (
               <Card variant="h3" {...data} />
             ))}
           </ul>
