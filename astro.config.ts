@@ -12,13 +12,13 @@ import { SITE } from "./src/config";
 
 import react from "@astrojs/react";
 
-import node from "@astrojs/node";
+import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
   output: "server",
-  adapter: node({ mode: "standalone" }),
+  adapter: vercel(),
   integrations: [react()],
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
@@ -52,10 +52,6 @@ export default defineConfig({
   env: {
     schema: {
       BACKEND_URL: envField.string({
-        access: "secret",
-        context: "server",
-      }),
-      PUBLIC_BACKEND_URL: envField.string({
         access: "public",
         context: "client",
       }),

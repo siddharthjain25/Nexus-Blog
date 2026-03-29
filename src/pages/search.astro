@@ -4,7 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { SITE } from "@/config";
-import { PUBLIC_BACKEND_URL } from "astro:env/client";
+import { BACKEND_URL } from "astro:env/client";
 ---
 
 <Layout title={`Search | ${SITE.title}`}>
@@ -42,7 +42,7 @@ import { PUBLIC_BACKEND_URL } from "astro:env/client";
   <Footer />
 </Layout>
 
-<script is:inline define:vars={{ PUBLIC_BACKEND_URL }}>
+<script is:inline define:vars={{ BACKEND_URL }}>
   function initSearch() {
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');
@@ -68,7 +68,7 @@ import { PUBLIC_BACKEND_URL } from "astro:env/client";
       noResults.classList.add('hidden');
 
       try {
-        const url = `${PUBLIC_BACKEND_URL}/posts/search?q=${encodeURIComponent(query)}`;
+        const url = `${BACKEND_URL}/posts/search?q=${encodeURIComponent(query)}`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Search failed`);
         

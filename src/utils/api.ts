@@ -1,4 +1,4 @@
-import { BACKEND_URL } from "astro:env/server";
+import { BACKEND_URL } from "astro:env/client";
 
 export async function fetchPosts() {
   try {

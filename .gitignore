@@ -11,3 +11,4 @@ yarn-error.log*
 .cache/
 package-lock.json
 yarn.lock
+.vercel
