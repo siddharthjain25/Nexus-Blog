@@ -13,7 +13,7 @@ const posts = await fetchPosts();
 <Layout title={`Posts | ${SITE.title}`}>
   <Header />
   <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
-    <ul>
+    <ul class="grid gap-8">
       {posts.map((data: any) => <Card {...data} />)}
     </ul>
   </Main>

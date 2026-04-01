@@ -5,7 +5,7 @@ export const SITE = {
   desc: "A personal blog about programming, technology, and life.",
   title: "Nexus",
   ogImage: "astropaper-og.jpg",
-  lightAndDarkMode: true,
+  lightAndDarkMode: false,
   postPerIndex: 4,
   scheduledPostMargin: 0, // no early visibility margin
   showBackButton: true, // show back button in post detail
