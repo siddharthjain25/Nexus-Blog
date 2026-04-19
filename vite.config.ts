@@ -11,11 +11,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-markdown': ['react-markdown', 'remark-gfm'],
-          'vendor-syntax': ['react-syntax-highlighter'],
-          'vendor-ui': ['lucide-react', 'clsx', 'tailwind-merge'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-syntax-highlighter')) return 'vendor-syntax';
+            if (id.includes('react-markdown') || id.includes('remark-gfm')) return 'vendor-markdown';
+            if (id.includes('lucide-react')) return 'vendor-ui';
+            return 'vendor'; // all other node_modules
+          }
         },
       },
     },
