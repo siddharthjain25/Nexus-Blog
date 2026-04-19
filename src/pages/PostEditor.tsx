@@ -25,7 +25,8 @@ const PostEditor: React.FC = () => {
     featured: false,
     draft: true,
     timezone: 'Asia/Kolkata',
-    hideEditPost: false
+    hideEditPost: false,
+    views: 0
   });
 
   const [tagString, setTagString] = useState('');
