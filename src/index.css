@@ -1,0 +1,107 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  --color-primary: #3b82f6;
+  --color-bg-deep: #020617;
+  --color-bg-card: #0f172a;
+  --color-border-subtle: #1e293b;
+}
+
+:root {
+  color-scheme: dark;
+  /* Support for modern dynamic viewport heights */
+  --vh: 100dvh;
+}
+
+body {
+  @apply bg-bg-deep text-slate-200;
+  /* Mobile optimization: remove tap highlight and prevent text resize */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  
+  /* Safe area support for modern notched displays */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Fix for WebKit Backdrop Blur (Safari/iOS) */
+.glass {
+  @apply backdrop-blur-md bg-bg-deep/80;
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.min-h-dynamic {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Custom Prose Overrides */
+.prose {
+  --tw-prose-body: #94a3b8;
+  --tw-prose-headings: #f8fafc;
+  --tw-prose-links: #3b82f6;
+  --tw-prose-bold: #f1f5f9;
+  --tw-prose-invert-body: #94a3b8;
+  --tw-prose-invert-headings: #f8fafc;
+  --tw-prose-invert-links: #3b82f6;
+  --tw-prose-invert-bold: #f1f5f9;
+  --tw-prose-invert-code: #e2e8f0;
+}
+
+.prose pre {
+  background-color: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-subtle) !important;
+  border-radius: 1rem !important;
+  opacity: 0.8;
+}
+
+.prose code {
+  background-color: rgba(30, 41, 59, 0.5) !important; /* slate-800/50 */
+  padding: 0.125rem 0.375rem !important;
+  border-radius: 0.25rem !important;
+  font-weight: 500 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.875rem !important;
+}
+
+.prose code::before, .prose code::after {
+  content: "" !important;
+}
+
+.prose a {
+  @apply no-underline hover:underline transition-all;
+}
+
+/* Custom scrollbar utility */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 rounded-full;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-700;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-bg-deep;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 rounded-full border-2 border-bg-deep;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-700;
+}
