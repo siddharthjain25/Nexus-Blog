@@ -12,12 +12,12 @@ const getHeaders = () => {
 };
 
 export const api = {
-  login: async (formData: FormData) => {
-    const response = await axios.post<AuthResponse>(`${API_URL}/token`, formData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
+  login: async (username: string, password: string) => {
+    const params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
+    
+    const response = await axios.post<AuthResponse>(`${API_URL}/token`, params);
     return response.data;
   },
 

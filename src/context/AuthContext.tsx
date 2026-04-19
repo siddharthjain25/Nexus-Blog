@@ -21,11 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     setError(null);
     try {
-      const formData = new FormData();
-      formData.append('username', username);
-      formData.append('password', password);
-      
-      const data = await api.login(formData);
+      const data = await api.login(username, password);
       const newToken = data.access_token;
       localStorage.setItem('admin_token', newToken);
       setToken(newToken);
