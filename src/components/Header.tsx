@@ -8,6 +8,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
+  const isPostsPath = location.pathname === '/posts';
+  const isHomePath = location.pathname === '/';
 
   return (
     <nav className="sticky top-0 z-50 glass border-b border-border-subtle">
@@ -22,7 +24,8 @@ const Header = () => {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            <Link to="/" className={`text-sm font-medium transition-colors ${!isAdminPath ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>Home</Link>
+            <Link to="/" className={`text-sm font-medium transition-colors ${isHomePath ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>Home</Link>
+            <Link to="/posts" className={`text-sm font-medium transition-colors ${isPostsPath ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>Posts</Link>
             {isAuthenticated ? (
               <>
                 <Link to="/admin" className={`text-sm font-medium transition-colors ${isAdminPath ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>Dashboard</Link>
@@ -54,7 +57,8 @@ const Header = () => {
       {/* Mobile Menu */}
       <div className={`md:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? 'max-h-64 border-b border-border-subtle bg-bg-card' : 'max-h-0'}`}>
         <div className="px-4 py-6 space-y-4">
-          <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">Home</Link>
+          <Link to="/" onClick={() => setIsMenuOpen(false)} className={`block px-3 py-2 ${isHomePath ? 'text-primary' : 'text-slate-300 hover:text-white'}`}>Home</Link>
+          <Link to="/posts" onClick={() => setIsMenuOpen(false)} className={`block px-3 py-2 ${isPostsPath ? 'text-primary' : 'text-slate-300 hover:text-white'}`}>Posts</Link>
           {isAuthenticated ? (
             <>
               <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">Dashboard</Link>

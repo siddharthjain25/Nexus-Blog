@@ -7,6 +7,7 @@ import { RefreshCw } from 'lucide-react';
 
 // Lazy load pages
 const Home = React.lazy(() => import('./pages/Home'));
+const Posts = React.lazy(() => import('./pages/Posts'));
 const PostDetail = React.lazy(() => import('./pages/PostDetail'));
 const Login = React.lazy(() => import('./pages/Login'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
@@ -26,6 +27,7 @@ function App() {
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/posts" element={<Posts />} />
               <Route path="/posts/:slug" element={<PostDetail />} />
               <Route path="/login" element={<Login />} />
               

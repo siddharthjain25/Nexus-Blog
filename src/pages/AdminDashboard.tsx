@@ -14,7 +14,7 @@ const AdminDashboard: React.FC = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const data = await api.getPosts();
+      const data = await api.getPosts(true, true);
       setPosts(data);
     } catch (error: any) {
       if (error.response?.status === 401) logout();
@@ -38,6 +38,31 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const isScheduled = (post: BlogPost) => {
+    if (post.draft) return false;
+    if (!post.pubDate) return false;
+    
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const pubDay = new Date(post.pubDate);
+      pubDay.setHours(0, 0, 0, 0);
+      
+      if (pubDay > today) return true;
+      if (pubDay < today) return false;
+      
+      if (post.pubTime) {
+        const [hours, minutes] = post.pubTime.split(':').map(Number);
+        const pubDateTime = new Date(today);
+        pubDateTime.setHours(hours, minutes, 0, 0);
+        return pubDateTime > new Date();
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  };
+
   const filteredPosts = posts.filter(post => 
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.slug.toLowerCase().includes(searchQuery.toLowerCase())
@@ -50,7 +75,7 @@ const AdminDashboard: React.FC = () => {
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-white">Dashboard</h1>
@@ -98,7 +123,7 @@ const AdminDashboard: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-6 py-5">
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {post.featured && (
                       <span className="px-2 py-0.5 text-[10px] font-black bg-amber-500/10 text-amber-500 rounded-md uppercase tracking-wider border border-amber-500/20 flex items-center gap-1">
                         <Star size={10} fill="currentColor" /> Featured
@@ -106,6 +131,8 @@ const AdminDashboard: React.FC = () => {
                     )}
                     {post.draft ? (
                       <span className="px-2 py-0.5 text-[10px] font-black bg-slate-800 text-slate-500 rounded-md uppercase tracking-wider border border-border-subtle">Draft</span>
+                    ) : isScheduled(post) ? (
+                      <span className="px-2 py-0.5 text-[10px] font-black bg-blue-500/10 text-blue-400 rounded-md uppercase tracking-wider border border-blue-500/20">Scheduled</span>
                     ) : (
                       <span className="px-2 py-0.5 text-[10px] font-black bg-green-500/10 text-green-400 rounded-md uppercase tracking-wider border border-green-500/20">Live</span>
                     )}
@@ -118,10 +145,10 @@ const AdminDashboard: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-6 py-5 text-sm text-slate-400 font-medium whitespace-nowrap">
-                  {post.pubDate ? new Date(post.pubDate).toLocaleDateString() : 'N/A'}
+                  {post.pubDate ? `${new Date(post.pubDate).toLocaleDateString()} ${post.pubTime || ''}` : 'N/A'}
                 </td>
                 <td className="px-6 py-5 text-right pr-8">
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end gap-3">
                     <Link to={`/admin/edit/${post.slug}`} className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
                       <Edit size={18} />
                     </Link>

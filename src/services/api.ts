@@ -5,6 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const getHeaders = () => {
   const token = localStorage.getItem('admin_token');
+  if (!token) return { 'Content-Type': 'application/json' };
   return {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
@@ -12,6 +13,7 @@ const getHeaders = () => {
 };
 
 export const api = {
+  // ... (login unchanged)
   login: async (username: string, password: string) => {
     const params = new URLSearchParams();
     params.append('username', username);
@@ -21,8 +23,15 @@ export const api = {
     return response.data;
   },
 
-  getPosts: async () => {
-    const response = await axios.get<BlogPost[]>(`${API_URL}/posts`);
+  getPosts: async (includeDrafts = false, includeScheduled = false) => {
+    const headers = getHeaders();
+    const response = await axios.get<BlogPost[]>(`${API_URL}/posts`, {
+      headers,
+      params: {
+        include_drafts: includeDrafts,
+        include_scheduled: includeScheduled
+      }
+    });
     return response.data;
   },
   

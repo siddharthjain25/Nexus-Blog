@@ -11,7 +11,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="min-h-dynamic bg-bg-deep selection:bg-primary/30 font-sans overflow-x-hidden w-full">
       <ReadingProgress />
       <Header />
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <main className="min-h-[70vh]">
         <React.Suspense fallback={
           <div className="flex justify-center items-center h-64">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>

@@ -76,33 +76,37 @@ const PostDetail: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-12 relative">
-      {/* Table of Contents - Desktop Sidebar */}
-      {toc.length > 0 && (
-        <aside className="hidden lg:block w-64 shrink-0 h-fit sticky top-24 order-2">
-          <div className="bg-bg-card/50 border border-border-subtle rounded-2xl p-6">
-            <div className="flex items-center gap-2 mb-4 text-white font-bold text-sm uppercase tracking-widest">
-              <List size={16} className="text-primary" />
-              <span>Contents</span>
+    <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-12">
+      <div className="flex flex-col lg:flex-row gap-8 relative items-start justify-center">
+        {/* Table of Contents - Extreme Left Sidebar */}
+        {toc.length > 0 && (
+          <aside className="hidden xl:block w-72 shrink-0 h-fit sticky top-24 order-1 self-start">
+            <div className="bg-bg-card/40 border border-border-subtle rounded-3xl p-8 backdrop-blur-sm shadow-2xl">
+              <div className="flex items-center gap-3 mb-6 text-white font-black text-xs uppercase tracking-[0.2em]">
+                <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                <span>Contents</span>
+              </div>
+              <nav className="space-y-4">
+                {toc.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className={`block text-xs transition-all hover:text-primary leading-relaxed ${
+                      item.level === 3 
+                        ? 'pl-6 text-slate-500 border-l border-slate-800' 
+                        : 'text-slate-400 font-bold hover:translate-x-1'
+                    }`}
+                  >
+                    {item.text}
+                  </a>
+                ))}
+              </nav>
             </div>
-            <nav className="space-y-3">
-              {toc.map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className={`block text-sm transition-colors hover:text-primary ${
-                    item.level === 3 ? 'pl-4 text-slate-500' : 'text-slate-400 font-medium'
-                  }`}
-                >
-                  {item.text}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </aside>
-      )}
+          </aside>
+        )}
 
-      <article className="flex-1 min-w-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        {/* Main Content - Centered in Middle Space */}
+        <article className="max-w-3xl w-full flex-1 min-w-0 animate-in fade-in slide-in-from-bottom-4 duration-700 order-2 lg:mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-primary transition-colors mb-8 group">
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           Back to stories
@@ -236,6 +240,7 @@ const PostDetail: React.FC = () => {
 
         <Comments />
       </article>
+    </div>
     </div>
   );
 };
