@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { BlogPost } from '../types';
-import { Edit, Trash2, Plus, RefreshCw, Search, ExternalLink, FileText, Star, Eye } from 'lucide-react';
+import { Edit, Trash2, Plus, RefreshCw, Search, ExternalLink, FileText, Eye } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AdminDashboard: React.FC = () => {
