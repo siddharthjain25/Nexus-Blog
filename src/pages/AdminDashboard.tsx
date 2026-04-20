@@ -124,11 +124,6 @@ const AdminDashboard: React.FC = () => {
                 </td>
                 <td className="px-6 py-5">
                   <div className="flex flex-wrap gap-2">
-                    {post.featured && (
-                      <span className="px-2 py-0.5 text-[10px] font-black bg-amber-500/10 text-amber-500 rounded-md uppercase tracking-wider border border-amber-500/20 flex items-center gap-1">
-                        <Star size={10} fill="currentColor" /> Featured
-                      </span>
-                    )}
                     {post.draft ? (
                       <span className="px-2 py-0.5 text-[10px] font-black bg-slate-800 text-slate-500 rounded-md uppercase tracking-wider border border-border-subtle">Draft</span>
                     ) : isScheduled(post) ? (

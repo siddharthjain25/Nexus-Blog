@@ -22,7 +22,6 @@ const PostEditor: React.FC = () => {
     pubTime: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
     author: 'Siddharth Jain',
     tags: [],
-    featured: false,
     draft: true,
     timezone: 'Asia/Kolkata',
     hideEditPost: false,
@@ -162,16 +161,6 @@ const PostEditor: React.FC = () => {
                     className="bg-transparent border-none outline-none text-slate-200 w-32"
                   />
                 </div>
-
-                <label className="flex items-center gap-2 cursor-pointer select-none px-3 py-2 bg-bg-deep border border-border-subtle rounded-xl">
-                  <input 
-                    type="checkbox"
-                    checked={post.featured}
-                    onChange={(e) => setPost({...post, featured: e.target.checked})}
-                    className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-primary focus:ring-primary"
-                  />
-                  <span className="text-slate-400">Featured</span>
-                </label>
 
                 <label className="flex items-center gap-2 cursor-pointer select-none px-3 py-2 bg-bg-deep border border-border-subtle rounded-xl">
                   <input 

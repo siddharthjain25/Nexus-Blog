@@ -7,7 +7,6 @@ export interface BlogPost {
   pubTime?: string | null;
   author: string;
   tags: string[];
-  featured: boolean;
   draft: boolean;
   canonicalURL?: string | null;
   hideEditPost?: boolean;

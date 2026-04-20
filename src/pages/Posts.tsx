@@ -13,13 +13,8 @@ const Posts: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const data = await api.getPosts();
-        // Sort posts by date (descending)
-        const sortedPosts = data.sort((a, b) => {
-          const dateA = new Date(`${a.pubDate || ''} ${a.pubTime || ''}`).getTime();
-          const dateB = new Date(`${b.pubDate || ''} ${b.pubTime || ''}`).getTime();
-          return dateB - dateA;
-        });
-        setPosts(sortedPosts);
+        // Backend now returns sorted posts
+        setPosts(data);
       } catch (error) {
         console.error('Failed to fetch posts', error);
       } finally {
