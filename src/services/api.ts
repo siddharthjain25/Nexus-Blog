@@ -23,6 +23,13 @@ export const api = {
     return response.data;
   },
 
+  verifyToken: async () => {
+    const response = await axios.get(`${API_URL}/verify-token`, {
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
+
   getPosts: async (includeDrafts = false, includeScheduled = false) => {
     const headers = getHeaders();
     const response = await axios.get<BlogPost[]>(`${API_URL}/posts`, {
