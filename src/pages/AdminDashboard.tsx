@@ -8,7 +8,6 @@ import {
   Plus,
   RefreshCw,
   Search,
-  ExternalLink,
   FileText,
   Eye,
 } from "lucide-react";
