@@ -43,7 +43,9 @@ export const api = {
   },
   
   getPost: async (slug: string) => {
-    const response = await axios.get<BlogPost>(`${API_URL}/posts/${slug}`);
+    const response = await axios.get<BlogPost>(`${API_URL}/posts/${slug}`, {
+      headers: getHeaders(),
+    });
     return response.data;
   },
   
@@ -62,7 +64,9 @@ export const api = {
   },
   
   searchPosts: async (query: string) => {
-    const response = await axios.get<BlogPost[]>(`${API_URL}/posts/search?q=${query}`);
+    const response = await axios.get<BlogPost[]>(`${API_URL}/posts/search?q=${query}`, {
+      headers: getHeaders(),
+    });
     return response.data;
   }
 };
