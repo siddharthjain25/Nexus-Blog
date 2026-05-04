@@ -19,6 +19,8 @@ const Register: React.FC = () => {
         email,
         full_name: fullName,
         password,
+        is_admin: false,
+        role: 'reader'
       });
       navigate('/');
     } catch (err) {

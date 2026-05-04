@@ -12,7 +12,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 const PostEditor: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { user, isAuthor, isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const isEditing = !!slug;
 
   const [post, setPost] = useState<BlogPost>({
@@ -27,7 +27,8 @@ const PostEditor: React.FC = () => {
     draft: true,
     timezone: 'Asia/Kolkata',
     hideEditPost: false,
-    views: 0
+    views: 0,
+    likes: 0
   });
 
 
