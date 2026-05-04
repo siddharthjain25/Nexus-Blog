@@ -13,8 +13,6 @@ import {
   Users,
   MessageSquare,
   Shield,
-  UserCheck,
-  MoreVertical,
   ChevronRight,
   ChevronDown
 } from "lucide-react";

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { Comment } from '../types';
 import { useAuth } from '../context/AuthContext';
-import { MessageSquare, Send, Trash2, Loader2, User, Clock, Reply, MoreHorizontal, ChevronDown, ChevronUp, Pencil } from 'lucide-react';
+import { MessageSquare, Send, Trash2, Loader2, User, Reply, ChevronDown, ChevronUp, Pencil } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface CommentsProps {
