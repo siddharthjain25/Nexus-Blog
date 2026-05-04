@@ -67,7 +67,9 @@ export const api = {
   },
 
   likePost: async (slug: string) => {
-    const response = await axios.post<{ likes: number }>(`${API_URL}/posts/${slug}/like`);
+    const response = await axios.post<{ likes: number }>(`${API_URL}/posts/${slug}/like`, {}, {
+      headers: getHeaders(),
+    });
     return response.data;
   },
 
