@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { BlogPost } from '../types';
-import { Calendar, ArrowLeft, Clock, Share2, Check, List, Eye } from 'lucide-react';
+import { Calendar, ArrowLeft, Clock, Share2, Check, List, Eye, Heart } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -10,29 +10,68 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Comments from '../components/Comments';
 import { PostDetailSkeleton } from '../components/Skeleton';
 
-const PostDetail: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
+interface PostDetailProps {
+  initialPost?: BlogPost;
+}
+
+const PostDetail: React.FC<PostDetailProps> = ({ initialPost }) => {
+  const { slug: urlSlug } = useParams<{ slug: string }>();
+  const slug = urlSlug || initialPost?.slug;
+  const [post, setPost] = useState<BlogPost | null>(initialPost || null);
+  const [loading, setLoading] = useState(!initialPost);
   const [copied, setCopied] = useState(false);
-  const [toc, setToc] = useState<{ id: string; text: string; level: number }[]>([]);
+  const [liked, setLiked] = useState(false);
+  const [liking, setLiking] = useState(false);
+
+  const generateToc = (body: string) => {
+    const headingLines = body.split('\n').filter(line => line.startsWith('##'));
+    return headingLines.map(line => {
+      const level = line.match(/^#+/)?.[0].length || 2;
+      const text = line.replace(/^#+\s+/, '');
+      const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+      return { id, text, level };
+    });
+  };
+
+  const [toc, setToc] = useState<{ id: string; text: string; level: number }[]>(
+    initialPost ? generateToc(initialPost.body) : []
+  );
 
   useEffect(() => {
+    // Check if user has already liked this post in this session
+    const likedPosts = JSON.parse(typeof window !== 'undefined' ? localStorage.getItem('liked_posts') || '[]' : '[]');
+    if (slug && likedPosts.includes(slug)) {
+      setLiked(true);
+    }
+  }, [slug]);
+
+  const handleLike = async () => {
+    if (!slug || liked || liking) return;
+    setLiking(true);
+    try {
+      const data = await api.likePost(slug);
+      if (post) {
+        setPost({ ...post, likes: data.likes });
+      }
+      setLiked(true);
+      const likedPosts = JSON.parse(localStorage.getItem('liked_posts') || '[]');
+      likedPosts.push(slug);
+      localStorage.setItem('liked_posts', JSON.stringify(likedPosts));
+    } catch (err) {
+      console.error('Failed to like post', err);
+    } finally {
+      setLiking(false);
+    }
+  };
+
+  useEffect(() => {
+    if (initialPost) return;
     const fetchPost = async () => {
       if (!slug) return;
       try {
         const data = await api.getPost(slug);
         setPost(data);
-        
-        // Generate TOC from markdown body
-        const headingLines = data.body.split('\n').filter(line => line.startsWith('##'));
-        const extractedToc = headingLines.map(line => {
-          const level = line.match(/^#+/)?.[0].length || 2;
-          const text = line.replace(/^#+\s+/, '');
-          const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
-          return { id, text, level };
-        });
-        setToc(extractedToc);
+        setToc(generateToc(data.body));
       } catch (error) {
         console.error('Failed to fetch post', error);
       } finally {
@@ -40,7 +79,7 @@ const PostDetail: React.FC = () => {
       }
     };
     fetchPost();
-  }, [slug]);
+  }, [slug, initialPost]);
 
   const handleShare = async () => {
     const shareData = {
@@ -126,12 +165,12 @@ const PostDetail: React.FC = () => {
           </h1>
 
           <div className="flex items-center gap-6 text-sm text-slate-400 border-b border-border-subtle pb-8">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-500 font-bold border border-border-subtle">
-                {post.author[0]?.toUpperCase()}
+            <Link to={`/user/${post.username}`} className="flex items-center gap-2 hover:text-primary transition-colors group">
+              <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-500 font-bold border border-border-subtle group-hover:border-primary/50 transition-colors">
+                {post.username[0]?.toUpperCase()}
               </div>
-              <span>{post.author}</span>
-            </div>
+              <span className="font-semibold">{post.username}</span>
+            </Link>
             <span className="flex items-center gap-1.5">
               <Calendar size={14} />
               {new Date(post.pubDate || '').toLocaleDateString('en-US', {
@@ -145,6 +184,10 @@ const PostDetail: React.FC = () => {
             <span className="flex items-center gap-1.5">
               <Eye size={14} />
               {post.views || 0}
+            </span>
+            <span className="flex items-center gap-1.5 text-rose-500/80">
+              <Heart size={14} className={liked ? "fill-rose-500" : "fill-rose-500/20"} />
+              {post.likes || 0}
             </span>
           </div>
         </header>
@@ -214,20 +257,33 @@ const PostDetail: React.FC = () => {
           <div className="flex justify-between items-center">
             <div className="flex gap-4 items-center">
               <button 
+                onClick={handleLike}
+                disabled={liked || liking}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg ${
+                  liked 
+                    ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' 
+                    : 'bg-bg-card border border-border-subtle hover:border-rose-500/50 text-slate-400 hover:text-rose-500 shadow-rose-500/5'
+                }`}
+              >
+                <Heart size={20} className={liked ? 'fill-rose-500' : ''} />
+                <span>{liked ? 'Liked Story' : 'Like Story'}</span>
+                {post.likes > 0 && <span className="ml-1 opacity-60">{post.likes}</span>}
+              </button>
+              
+              <button 
                 onClick={handleShare}
-                className={`p-2 rounded-lg transition-all flex items-center gap-2 text-sm font-medium ${
-                  copied ? 'bg-green-500/10 text-green-400' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-sm font-medium ${
+                  copied ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'text-slate-400 hover:text-white bg-bg-card border border-border-subtle'
                 }`}
               >
                 {copied ? (
                   <>
                     <Check size={20} />
-                    <span>Link Copied!</span>
+                    <span>Copied</span>
                   </>
                 ) : (
                   <>
                     <Share2 size={20} />
-                    <span>Share Story</span>
                   </>
                 )}
               </button>
@@ -238,7 +294,7 @@ const PostDetail: React.FC = () => {
           </div>
         </footer>
 
-        <Comments />
+        <Comments postSlug={post.slug} />
       </article>
     </div>
     </div>

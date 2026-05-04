@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Home from '../pages/Home';
+import { api } from '../services/api';
+
+// SSR: Fetch data on the server
+let posts = [];
+try {
+  posts = await api.getPosts();
+} catch (error) {
+  console.error('Failed to fetch posts for SSR', error);
+}
+---
+
+<BaseLayout title="Nexus Blog - Home">
+	<Home client:load initialPosts={posts} />
+</BaseLayout>

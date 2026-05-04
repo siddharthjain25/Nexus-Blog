@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { BlogPost } from '../types';
-import { Calendar, ArrowRight, Eye, Zap } from 'lucide-react';
+import { Calendar, ArrowRight, Eye, Zap, User, Heart } from 'lucide-react';
 import { HomeSkeleton } from '../components/Skeleton';
 
-const Home: React.FC = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+interface HomeProps {
+  initialPosts?: BlogPost[];
+}
+
+const Home: React.FC<HomeProps> = ({ initialPosts }) => {
+  const [posts, setPosts] = useState<BlogPost[]>(initialPosts || []);
+  const [loading, setLoading] = useState(!initialPosts);
 
   useEffect(() => {
+    if (initialPosts) return;
     const fetchPosts = async () => {
       try {
         const data = await api.getPosts();
@@ -93,6 +98,15 @@ const Home: React.FC = () => {
                     <Eye size={14} />
                     {latestPost.views || 0}
                   </span>
+                  <span className="flex items-center gap-1.5 text-rose-500/80">
+                    <Heart size={14} className="fill-rose-500/20" />
+                    {latestPost.likes || 0}
+                  </span>
+                  <span className="flex items-center gap-1 text-slate-600">•</span>
+                  <Link to={`/user/${latestPost.username}`} className="flex items-center gap-1.5 hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]">
+                    <User size={12} />
+                    {latestPost.username}
+                  </Link>
                 </div>
                 <Link to={`/posts/${latestPost.slug}`} className="inline-flex items-center gap-2 text-primary font-bold text-sm group/btn">
                   Read Full Story 
@@ -135,10 +149,16 @@ const Home: React.FC = () => {
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-border-subtle/50 flex items-center justify-between">
-                  <div className="flex gap-2">
-                    {post.tags.slice(0, 1).map(tag => (
-                      <span key={tag} className="text-[9px] font-bold text-slate-500 uppercase">#{tag}</span>
-                    ))}
+                  <div className="flex items-center gap-3">
+                    <Link to={`/user/${post.username}`} className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-primary transition-colors uppercase tracking-widest">
+                      <User size={12} />
+                      {post.username}
+                    </Link>
+                    <div className="flex gap-2">
+                      {post.tags.slice(0, 1).map(tag => (
+                        <span key={tag} className="text-[9px] font-bold text-slate-500 uppercase">#{tag}</span>
+                      ))}
+                    </div>
                   </div>
                   <Link to={`/posts/${post.slug}`} className="text-primary hover:translate-x-1 transition-transform">
                     <ArrowRight size={16} />
