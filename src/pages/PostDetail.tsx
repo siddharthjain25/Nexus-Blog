@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { BlogPost } from '../types';
 import { Calendar, ArrowLeft, Clock, Share2, Check, List, Eye, Heart } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Comments from '../components/Comments';
 import { PostDetailSkeleton } from '../components/Skeleton';
+import { useAuth } from '../context/AuthContext';
 
 interface PostDetailProps {
   initialPost?: BlogPost;
@@ -16,6 +17,8 @@ interface PostDetailProps {
 
 const PostDetail: React.FC<PostDetailProps> = ({ initialPost }) => {
   const { slug: urlSlug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const slug = urlSlug || initialPost?.slug;
   const [post, setPost] = useState<BlogPost | null>(initialPost || null);
   const [loading, setLoading] = useState(!initialPost);
@@ -47,6 +50,14 @@ const PostDetail: React.FC<PostDetailProps> = ({ initialPost }) => {
 
   const handleLike = async () => {
     if (!slug || liked || liking) return;
+
+    if (!isAuthenticated) {
+      if (window.confirm('You need to be logged in to like posts. Go to login?')) {
+        navigate('/login');
+      }
+      return;
+    }
+
     setLiking(true);
     try {
       const data = await api.likePost(slug);
