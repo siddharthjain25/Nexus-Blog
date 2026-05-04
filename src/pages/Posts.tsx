@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { BlogPost } from '../types';
-import { Calendar, ArrowRight, Search, Hash, Eye, RefreshCw } from 'lucide-react';
+import { Calendar, ArrowRight, Search, Hash, Eye, RefreshCw, User, Heart } from 'lucide-react';
 
-const Posts: React.FC = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+interface PostsProps {
+  initialPosts?: BlogPost[];
+}
+
+const Posts: React.FC<PostsProps> = ({ initialPosts }) => {
+  const [posts, setPosts] = useState<BlogPost[]>(initialPosts || []);
+  const [loading, setLoading] = useState(!initialPosts);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
+    if (initialPosts) return;
     const fetchPosts = async () => {
       try {
         const data = await api.getPosts();
@@ -83,11 +88,20 @@ const Posts: React.FC = () => {
                         <Eye size={14} />
                         {post.views || 0}
                       </span>
+                      <span className="flex items-center gap-1 text-rose-500/80">
+                        <Heart size={14} className="fill-rose-500/20" />
+                        {post.likes || 0}
+                      </span>
                       <span className="flex items-center gap-1 text-slate-600">•</span>
                       <span className="flex items-center gap-1">
                         <Hash size={14} />
                         {post.tags?.[0] || 'Uncategorized'}
                       </span>
+                      <span className="flex items-center gap-1 text-slate-600">•</span>
+                      <Link to={`/user/${post.username}`} className="flex items-center gap-1 hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]">
+                        <User size={12} />
+                        {post.username}
+                      </Link>
                     </div>
                     
                     <Link to={`/posts/${post.slug}`} className="block group-hover:text-primary transition-colors">

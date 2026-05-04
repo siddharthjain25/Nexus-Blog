@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostDetail from '../../pages/PostDetail';
+import { api } from '../../services/api';
+
+const { slug } = Astro.params;
+
+let post = null;
+try {
+  if (slug) {
+    post = await api.getPost(slug);
+  }
+} catch (error) {
+  console.error('Failed to fetch post for SSR', error);
+}
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+---
+
+<BaseLayout title={post.title} description={post.description}>
+	<PostDetail client:load initialPost={post} />
+</BaseLayout>

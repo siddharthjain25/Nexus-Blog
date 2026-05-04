@@ -9,7 +9,10 @@ import { RefreshCw } from 'lucide-react';
 const Home = React.lazy(() => import('./pages/Home'));
 const Posts = React.lazy(() => import('./pages/Posts'));
 const PostDetail = React.lazy(() => import('./pages/PostDetail'));
+const UserPosts = React.lazy(() => import('./pages/UserPosts'));
 const Login = React.lazy(() => import('./pages/Login'));
+const Register = React.lazy(() => import('./pages/Register'));
+const Profile = React.lazy(() => import('./pages/Profile'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const PostEditor = React.lazy(() => import('./pages/PostEditor'));
 
@@ -29,12 +32,15 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/posts" element={<Posts />} />
               <Route path="/posts/:slug" element={<PostDetail />} />
+              <Route path="/user/:username" element={<UserPosts />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               
-              {/* Admin Routes */}
-              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/admin/new" element={<ProtectedRoute><PostEditor /></ProtectedRoute>} />
-              <Route path="/admin/edit/:slug" element={<ProtectedRoute><PostEditor /></ProtectedRoute>} />
+              {/* Admin & Author Routes */}
+              <Route path="/admin" element={<ProtectedRoute authorOnly><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/new" element={<ProtectedRoute authorOnly><PostEditor /></ProtectedRoute>} />
+              <Route path="/admin/edit/:slug" element={<ProtectedRoute authorOnly><PostEditor /></ProtectedRoute>} />
               
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { BlogPost } from '../types';
+import { useAuth } from '../context/AuthContext';
 import { Save, ArrowLeft, Loader2, Info, Eye, Edit3 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -11,6 +12,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 const PostEditor: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { user, isAuthor, isAdmin } = useAuth();
   const isEditing = !!slug;
 
   const [post, setPost] = useState<BlogPost>({
@@ -20,13 +22,20 @@ const PostEditor: React.FC = () => {
     body: '',
     pubDate: new Date().toISOString().split('T')[0],
     pubTime: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
-    author: 'Siddharth Jain',
+    username: user?.username || 'admin',
     tags: [],
     draft: true,
     timezone: 'Asia/Kolkata',
     hideEditPost: false,
     views: 0
   });
+
+
+  useEffect(() => {
+    if (user && !isEditing) {
+      setPost(prev => ({ ...prev, username: user.username }));
+    }
+  }, [user, isEditing]);
 
   const [tagString, setTagString] = useState('');
   const [loading, setLoading] = useState(isEditing);
@@ -38,6 +47,14 @@ const PostEditor: React.FC = () => {
       const fetchPost = async () => {
         try {
           const data = await api.getPost(slug);
+
+          // Check permissions for editing
+          if (!isAdmin && data.username !== user?.username) {
+            alert("You don't have permission to edit this post.");
+            navigate('/admin');
+            return;
+          }
+
           setPost(data);
           setTagString(data.tags?.join(', ') || '');
         } catch (error) {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Menu, X, BookOpen, LogIn } from 'lucide-react';
+import { LogOut, Menu, X, BookOpen, LogIn, User } from 'lucide-react';
 
 const Header = () => {
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated, isAdmin, isAuthor, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
@@ -28,21 +28,29 @@ const Header = () => {
             <Link to="/posts" className={`text-sm font-medium transition-colors ${isPostsPath ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>Posts</Link>
             {isAuthenticated ? (
               <>
-                <Link to="/admin" className={`text-sm font-medium transition-colors ${isAdminPath ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>Dashboard</Link>
-                <div className="flex items-center gap-4 pl-4 border-l border-border-subtle">
+                {(isAdmin || isAuthor) && (
+                  <Link to="/admin" className={`text-sm font-medium transition-colors ${isAdminPath ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>Dashboard</Link>
+                )}
+                <div className="flex items-center gap-6 pl-4 border-l border-border-subtle">
+                  <Link to={`/user/${user?.username}`} className={`flex items-center gap-2 text-sm font-medium transition-colors ${location.pathname === `/user/${user?.username}` ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>
+                    <span>My Stories</span>
+                  </Link>
+                  <Link to="/profile" className={`flex items-center gap-2 text-sm font-medium transition-colors ${location.pathname === '/profile' ? 'text-primary' : 'text-slate-400 hover:text-white'}`}>
+                    <User size={16} />
+                    <span>{user?.username}</span>
+                  </Link>
                   <button 
                     onClick={logout}
                     className="flex items-center gap-2 text-slate-400 hover:text-red-400 transition-colors text-sm font-medium"
                   >
                     <LogOut size={16} />
-                    <span>Sign Out</span>
                   </button>
                 </div>
               </>
             ) : (
               <Link to="/login" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
                 <LogIn size={16} />
-                <span>Admin Login</span>
+                <span>Sign In</span>
               </Link>
             )}
           </div>
@@ -55,20 +63,24 @@ const Header = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`md:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? 'max-h-64 border-b border-border-subtle bg-bg-card' : 'max-h-0'}`}>
+      <div className={`md:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? 'max-h-80 border-b border-border-subtle bg-bg-card' : 'max-h-0'}`}>
         <div className="px-4 py-6 space-y-4">
           <Link to="/" onClick={() => setIsMenuOpen(false)} className={`block px-3 py-2 ${isHomePath ? 'text-primary' : 'text-slate-300 hover:text-white'}`}>Home</Link>
           <Link to="/posts" onClick={() => setIsMenuOpen(false)} className={`block px-3 py-2 ${isPostsPath ? 'text-primary' : 'text-slate-300 hover:text-white'}`}>Posts</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">Dashboard</Link>
+              {(isAdmin || isAuthor) && (
+                <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">Dashboard</Link>
+              )}
+              <Link to={`/user/${user?.username}`} onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">My Stories</Link>
+              <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">Profile</Link>
               <button onClick={() => { logout(); setIsMenuOpen(false); }} className="w-full text-left flex items-center gap-3 text-red-400 px-3 py-2 text-sm font-medium hover:bg-red-400/5 rounded-xl transition-colors">
                 <LogOut size={18} />
                 <span>Sign Out</span>
               </button>
             </>
           ) : (
-            <Link to="/login" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">Admin Login</Link>
+            <Link to="/login" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-slate-300 hover:text-white">Sign In</Link>
           )}
         </div>
       </div>
