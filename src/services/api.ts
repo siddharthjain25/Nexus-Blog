@@ -48,12 +48,14 @@ export const api = {
     return response.data;
   },
 
-  getPosts: async (includeDrafts = false, includeScheduled = false, headers?: Record<string, string>) => {
+  getPosts: async (includeDrafts = false, includeScheduled = false, limit?: number, skip?: number, headers?: Record<string, string>) => {
     const response = await axios.get<BlogPost[]>(`${API_URL}/posts`, {
       headers: getHeaders(headers),
       params: {
         include_drafts: includeDrafts,
-        include_scheduled: includeScheduled
+        include_scheduled: includeScheduled,
+        limit,
+        skip
       }
     });
     return response.data;

@@ -17,14 +17,9 @@ const Home: React.FC<HomeProps> = ({ initialPosts }) => {
     if (initialPosts) return;
     const fetchPosts = async () => {
       try {
-        const data = await api.getPosts();
-        // Backend returns sorted posts, but we keep a fallback sort just in case
-        const sortedPosts = data.sort((a, b) => {
-          const dateA = new Date(`${a.pubDate || ''} ${a.pubTime || ''}`).getTime();
-          const dateB = new Date(`${b.pubDate || ''} ${b.pubTime || ''}`).getTime();
-          return dateB - dateA;
-        });
-        setPosts(sortedPosts);
+        // Only fetch the top 5 latest posts for the homepage
+        const data = await api.getPosts(false, false, 5);
+        setPosts(data);
       } catch (error) {
         console.error('Failed to fetch posts', error);
       } finally {
