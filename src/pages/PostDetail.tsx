@@ -48,6 +48,13 @@ const PostDetail: React.FC<PostDetailProps> = ({ initialPost }) => {
     }
   }, [slug]);
 
+  useEffect(() => {
+    if (slug) {
+      // Silently track view without blocking the UI
+      api.trackView(slug);
+    }
+  }, [slug]);
+
   const handleLike = async () => {
     if (!slug || liked || liking) return;
 
