@@ -52,6 +52,10 @@ export const api = {
   },
 
   getPosts: async (includeDrafts = false, includeScheduled = false, limit?: number, skip?: number, headers?: Record<string, string>) => {
+    const cacheKey = `posts-${includeDrafts}-${includeScheduled}-${limit}-${skip}`;
+    if (cache[cacheKey] && Date.now() - cache[cacheKey].timestamp < CACHE_TTL) {
+      return cache[cacheKey].data as BlogPost[];
+    }
     const response = await axios.get<BlogPost[]>(`${API_URL}/posts`, {
       headers: getHeaders(headers),
       params: {
@@ -61,6 +65,7 @@ export const api = {
         skip
       }
     });
+    cache[cacheKey] = { data: response.data, timestamp: Date.now() };
     return response.data;
   },
   
@@ -69,6 +74,17 @@ export const api = {
       headers: getHeaders(headers),
     });
     return response.data;
+  },
+
+  trackView: async (slug: string) => {
+    try {
+      // We don't await or care about the response data
+      await axios.post(`${API_URL}/posts/${slug}/view`, {}, {
+        headers: getHeaders(),
+      });
+    } catch (e) {
+      // Ignore tracking errors
+    }
   },
 
   likePost: async (slug: string) => {
