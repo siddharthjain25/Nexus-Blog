@@ -52,10 +52,6 @@ export const api = {
   },
 
   getPosts: async (includeDrafts = false, includeScheduled = false, limit?: number, skip?: number, headers?: Record<string, string>) => {
-    const cacheKey = `posts-${includeDrafts}-${includeScheduled}-${limit}-${skip}`;
-    if (cache[cacheKey] && Date.now() - cache[cacheKey].timestamp < CACHE_TTL) {
-      return cache[cacheKey].data as BlogPost[];
-    }
     const response = await axios.get<BlogPost[]>(`${API_URL}/posts`, {
       headers: getHeaders(headers),
       params: {
@@ -65,7 +61,6 @@ export const api = {
         skip
       }
     });
-    cache[cacheKey] = { data: response.data, timestamp: Date.now() };
     return response.data;
   },
   
