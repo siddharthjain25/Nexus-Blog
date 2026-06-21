@@ -14,6 +14,9 @@ const getHeaders = (customHeaders?: Record<string, string>) => {
   return { ...headers, ...customHeaders };
 };
 
+const cache: Record<string, { data: any; timestamp: number }> = {};
+const CACHE_TTL = 60 * 1000; // 1 minute
+
 export const api = {
   register: async (userData: UserCreate) => {
     const response = await axios.post<User>(`${API_URL}/register`, userData);
@@ -49,6 +52,10 @@ export const api = {
   },
 
   getPosts: async (includeDrafts = false, includeScheduled = false, limit?: number, skip?: number, headers?: Record<string, string>) => {
+    const cacheKey = `posts-${includeDrafts}-${includeScheduled}-${limit}-${skip}`;
+    if (cache[cacheKey] && Date.now() - cache[cacheKey].timestamp < CACHE_TTL) {
+      return cache[cacheKey].data as BlogPost[];
+    }
     const response = await axios.get<BlogPost[]>(`${API_URL}/posts`, {
       headers: getHeaders(headers),
       params: {
@@ -58,6 +65,7 @@ export const api = {
         skip
       }
     });
+    cache[cacheKey] = { data: response.data, timestamp: Date.now() };
     return response.data;
   },
   

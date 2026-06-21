@@ -1,16 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Posts from '../pages/Posts';
-import { api } from '../services/api';
 
-let posts = [];
-try {
-  posts = await api.getPosts();
-} catch (error) {
-  console.error('Failed to fetch posts for SSR', error);
-}
+// SSR fetching removed.
+// The Posts component will fetch client-side.
 ---
 
 <BaseLayout title="All Stories - Nexus Blog">
-	<Posts client:load initialPosts={posts} />
+	<Posts client:load />
 </BaseLayout>
